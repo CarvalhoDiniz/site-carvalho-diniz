@@ -3,16 +3,22 @@ name: Enable Pages Preview
 on:
   issues:
     types: [opened]
+  pull_request:
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   issues: read
+  pull-requests: read
 
 jobs:
   enable-pages:
-    if: github.event_name == 'workflow_dispatch' || github.event.issue.title == '[automation] enable pages preview'
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issues' && github.event.issue.title == '[automation] enable pages preview') ||
+      (github.event_name == 'pull_request' && github.event.pull_request.title == '[automation] enable pages preview')
     runs-on: ubuntu-latest
     steps:
       - name: Enable GitHub Pages from preview branch
